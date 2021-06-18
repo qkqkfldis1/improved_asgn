@@ -556,10 +556,10 @@ if __name__ == '__main__':
     for i in range(len(tr_id)):
         train_datas.append(datas[tr_id[i]])
 
-    # pickle.dump(train_datas,open(save_path['train'],'wb'))
-    # print('ok')
-    # pickle.dump(test_datas,open(save_path['test'],'wb'))
-    # print('ok')
-    # pickle.dump(valid_datas,open(save_path['valid'],'wb'))
-    # print('ok')
-    # print('total_error {}'.format(error))
+    pickle.dump(train_datas,open(save_path['train'],'wb'))
+    print('ok')
+    pickle.dump(test_datas,open(save_path['test'],'wb'))
+    print('ok')
+    pickle.dump(valid_datas,open(save_path['valid'],'wb'))
+    print('ok')
+    print('total_error {}'.format(error))

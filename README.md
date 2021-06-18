@@ -26,6 +26,18 @@ Orginal paper: ASGN: An Active Semi-supervised Graph Neural Network for Molecula
 + `exp`: Experiments loggings.
 
 
+# How to learn
+If you use ASGN in your research, please use the following BibTex.
+```
+1. qm9 download (below link)
+https://figshare.com/articles/dataset/Data_for_6095_constitutional_isomers_of_C7H10O2/1057646?backTo=/collections/Quantum_chemistry_structures_and_properties_of_134_kilo_molecules/978904
+2. PYTHONPATH=. python utils/pre/qm9_predata.py
+3. PYTHONPATH=. python utils/pre/pre_qm.py
+4. PYTHONPATH=. python single_model_al/wsl_al.py 
+```
+
+
+
 # Citing ASGN
 If you use ASGN in your research, please use the following BibTex.
 ```
