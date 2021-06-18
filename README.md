@@ -27,7 +27,7 @@ Orginal paper: ASGN: An Active Semi-supervised Graph Neural Network for Molecula
 
 
 # How to learn
-If you use ASGN in your research, please use the following BibTex.
+- You need to modify self.PATH in config.py depending on your environment.
 ```
 1. qm9 download (below link)
 https://figshare.com/articles/dataset/Data_for_6095_constitutional_isomers_of_C7H10O2/1057646?backTo=/collections/Quantum_chemistry_structures_and_properties_of_134_kilo_molecules/978904
@@ -51,3 +51,10 @@ If you use ASGN in your research, please use the following BibTex.
 ```
 
 
+# IDEAS
+- Swav
+    - Sinkhorn problem end2end 로 바꾸기.
+- Multiple clustering 
+    - 다양한 기준으로 클러스터링한다?
+- Signal from pseudo label
+    - student 성능 기반으로 signal 얻기
