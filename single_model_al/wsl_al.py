@@ -24,11 +24,11 @@ def active_learning(input):
     writer = input['writer']
     device = input['device']
     ft_method = input['ft_method']
-    cpt_data_nums = input['checkpoint_data_num']
+    cpt_data_nums = input['checkpoint_data_num'] # [5000, 10000, 20000, 30000, 40000, 50000, 60000, 70000]
     al_settings = input['al_settings']
     result_path = input['result_path']
     cpt_path = input['cpt_path']
-    checkpoint_epochs_num = input['checkpoint_epochs_num']
+    checkpoint_epochs_num = input['checkpoint_epochs_num'] # [800, 500, 500, 500, 400, 200, 200, 200]
 
     # al_method = input['al_method']
     # val_dataset = input['val_dataset']
@@ -44,12 +44,12 @@ def active_learning(input):
     cpk_test_mae = []
     label_rates = []
     train_info = {'total_epochs': [], 'train_loss': [], 'train_mae': []}
-    p_labels = torch.zeros(len(train_dataset)).long()
+    p_labels = torch.zeros(len(train_dataset)).long() # size(113713)
 
-    t_iterations = int((len(train_dataset) - args.init_data_num) /
+    t_iterations = int((len(train_dataset) - args.init_data_num) /   # (113713 - 5000) / 5000 + 1 = 22
                        args.batch_data_num) + 1  # discard tail data
     total_data_num = (t_iterations -
-                      1) * args.batch_data_num + args.init_data_num
+                      1) * args.batch_data_num + args.init_data_num # 110000
     # train_ids = random.sample(range(len(train_dataset)), args.init_data_num)  # record total data not discard
 
     dataset_s = SelfMolDataSet(mols=train_dataset.mols,
@@ -58,6 +58,8 @@ def active_learning(input):
     # al_inferencer = Inferencer(args,al_method)
     al_trainer = Weakly_Supervised_Trainer(args, al_settings)
     # al_trainer = Trainer(args, t_iterations, method=ft_method, ft_epochs=ft_epochs)
+
+    # 지금 여기서 돌리는건 아무것도 없이 그냥 해보는건가.
     al_trainer.run(model_l,
                    dataset_s,
                    optimizer,
@@ -66,12 +68,12 @@ def active_learning(input):
                    None,
                    level='g')
     preds = get_preds_w(args, model_l, dataset_s, device)
-    # train_ids = k_center(preds.cpu(),args.init_data_num)
-    train_ids = k_medoid(preds.cpu(),
-                         args.init_data_num,
-                         al_settings['iters'],
-                         None,
-                         show_stats=True)
+    train_ids = k_center(preds.cpu(),args.init_data_num) # 지금은 5000
+    # train_ids = k_medoid(preds.cpu(),
+    #                      args.init_data_num,
+    #                      al_settings['iters'],
+    #                      None,
+    #                      show_stats=True)
     al_sampler = AL_sampler(args, len(train_dataset), args.batch_data_num,
                             train_ids, al_method)
 
@@ -83,8 +85,8 @@ def active_learning(input):
 
     for iters in range(0, t_iterations):
 
-        expect_data_num = args.init_data_num + iters * args.batch_data_num
-        label_rate = expect_data_num / total_data_num
+        expect_data_num = args.init_data_num + iters * args.batch_data_num # 5000 + iters * 5000
+        label_rate = expect_data_num / total_data_num # expect_data_num / 110000
         labeled_ids = al_sampler.get_label_ids()
         unlabeled_ids = al_sampler.get_unlabeled_ids()
         # Do checkpoint_test
@@ -93,11 +95,14 @@ def active_learning(input):
             train_ckpset = MoleDataset(
                 mols=[train_dataset.mols[i] for i in labeled_ids],
                 prop_name=args.prop_name)
+
             print('start checkpoint testing iter {} with labels {}'.format(
                 cpk_test_iter, len(train_ckpset)))
+
             model_h, cpk_mae_train, cpk_mae_test = check_point_test(
                 al_settings, train_ckpset, test_dataset, model_l,
                 checkpoint_epochs_num[cpk_test_iter], device)
+
             cpk_train_mae.append(cpk_mae_train)
             cpk_test_mae.append(cpk_mae_test)
             save_cpt_xlsx(cpt_path, cpt_data_nums, cpk_train_mae, cpk_test_mae)
@@ -109,7 +114,7 @@ def active_learning(input):
                 # generate pesudo labels for next iteration
                 p_labels = al_trainer.generate_p_labels(
                     model_h, train_dataset, labeled_ids, unlabeled_ids,
-                    args.prop_name, device)
+                    args.prop_name, device) # 제대로 수도레이블 안됌.
 
             cpk_test_iter += 1
 
@@ -166,6 +171,8 @@ def active_learning(input):
 if __name__ == "__main__":
     config = Global_Config()
     args = make_args()
+    print(args)
+    print(args.prop_name)
     #
     # al_method = 'random'
     # ft_method = 'by_valid'
@@ -192,8 +199,8 @@ if __name__ == "__main__":
         'pre_train': None,
         'lr': 1e-3,
         'epochs': 150,
-        'batch_size': 256,
-        'n_patience': 55,
+        'batch_size': 20,
+        'n_patience': 20,
         'cls_method': 'ot',
         'prop_bins': 25,
         'cls_num': 100,

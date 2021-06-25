@@ -89,6 +89,12 @@ def make_args():
                         default='homo',
                         help='which property to predict')
 
+
+    # prop_list = [
+    #     'index', 'A', 'B', 'C', 'mu', 'alpha', 'homo', 'lumo', 'gap', 'r2',
+    #     'zpve', 'U0', 'U', 'H', 'G', 'Cv'
+    # ]
+
     # universal active learning settings
     parser.add_argument('--batch_data_num', type=int, default=5000)
     parser.add_argument('--test_freq', default=1)

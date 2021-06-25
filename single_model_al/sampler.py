@@ -762,7 +762,7 @@ class Weakly_Supervised_Trainer(object):
             if epoch % settings['cls_epochs'] == 1:
                 time0 = time.time()
 
-                # Q = ot.sinkhorn(p, q, C, 0.04)
+                Q = ot.sinkhorn(p, q, C, 0.04)
 
                 print('optimal transport finished {}'.format(time.time() -
                                                              time0))
@@ -800,19 +800,20 @@ class Weakly_Supervised_Trainer(object):
                     p_loss = MSE_fn(prop_preds, p_labels[list(ids)])
                     p_mae = MAE_fn(prop_preds, p_labels[list(ids)])
 
-                # loss = c_loss + n_loss + e_loss + p_loss* 5e4
+                loss = c_loss + n_loss + e_loss + p_loss* 5e4
                 # For AB study
                 # loss = n_loss + e_loss + p_loss* 4e4
                 # For vanilla k center
-                loss = p_loss * 5e4
+                #loss = p_loss * 5e4
                 if level == 'w':
                     optimizer.zero_grad()
                     loss.backward()
                     optimizer.step()
-
+                #
                 # optimizer.zero_grad()
                 # loss.backward()
                 # optimizer.step()
+
 
                 C[idx * self.args.batchsize:idx * self.args.batchsize +
                   len(mols)] = -cls_logits.detach().cpu().numpy()
